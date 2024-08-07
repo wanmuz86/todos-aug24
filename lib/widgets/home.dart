@@ -63,6 +63,16 @@ class _HomePageState extends State<HomePage> {
 
   }
 
+  void saveData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance(); // RETRIEVE THE FILE MANAGER
+    // SAVEE!!
+
+// setString (Save as String)
+    // Shared pref can only be stored in String, int, double , List<String>
+    // If you want to store List<Map<String,dynamic> we use jsonEncode to transform List<Map<String,dynamic> to String
+    prefs.setString("todos", jsonEncode(_todos));
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +109,9 @@ class _HomePageState extends State<HomePage> {
                    if (response["action"] == 1){
                      // Delete
                      _todos.removeAt(response["index"]);
+
+                     saveData();
+
                      setState(() {
                        _todos;
                      });
@@ -108,6 +121,8 @@ class _HomePageState extends State<HomePage> {
                      // Mark as complete
                      //  if it is true, change to false, if it false, change to true
                      _todos[response["index"]]["completed"] = ! _todos[response["index"]]["completed"];
+
+                     saveData();
                      setState(() {
                        _todos;
                      });
@@ -127,14 +142,7 @@ class _HomePageState extends State<HomePage> {
 
           if (item != null){
             _todos.add(item);
-
-            final SharedPreferences prefs = await SharedPreferences.getInstance(); // RETRIEVE THE FILE MANAGER
-            // SAVEE!!
-
-// setString (Save as String)
-            // Shared pref can only be stored in String, int, double , List<String>
-            // If you want to store List<Map<String,dynamic> we use jsonEncode to transform List<Map<String,dynamic> to String
-            prefs.setString("todos", jsonEncode(_todos));
+            saveData();
 
             setState(() {
               _todos ; // same as _todos = _todos (refresh the UI)
